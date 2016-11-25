@@ -8,24 +8,26 @@
 
 ## Использование
 
-Скрипт принимает на вход директорию. Задать ее можно двумя способами:
+Скрипт принимает на вход директорию:
 
-* явно указать при запуске скрипта: 
 ```sh
 $ python3.5 ./duplicates.py ./SomeDir
 ```
 
-* запустить скрипт на выполнение командой:
+Для получения справки можно использовать аргументы -h или --help:
+
 ```sh
-$ python3.5 ./duplicates.py
-```
-В этом случае потребуется ввести директорию отдельно:
-```sh
-$ Enter directory > ./SomeDir
-```
-При попытке передать скрипту более двух параметров будет выведено сообщение:
-```sh
-Error: too many parameters are transferred
+$ python3.5 ./duplicates.py -h
+usage: duplicates.py [-h] dir
+
+Script for search of files duplicates
+
+positional arguments:
+  dir         Directory for search
+
+optional arguments:
+  -h, --help  show this help message and exit
+
 ```
 
 ## Пример
@@ -33,14 +35,14 @@ Error: too many parameters are transferred
 Ниже приведен пример использования скрипта и его вывод:
 ```sh
 $ python3.5 ./duplicates.py ./Dir
-File File3.txt has duplicates in the following directories:
-./Dir/Dir3/File3.txt
-./Dir/Dir3/Dir32/File3.txt
-File File1.txt has duplicates in the following directories:
-./Dir/Dir1/File1.txt
-./Dir/Dir2/File1.txt
-./Dir/Dir3/File1.txt
-File File2.txt has duplicates in the following directories:
+File File2.txt (size: 36) has duplicates in the following directories:
 ./Dir/File2.txt
 ./Dir/Dir2/File2.txt
+File File1.txt (size: 31) has duplicates in the following directories:
+./Dir/Dir1/File1.txt
+./Dir/Dir2/File1.txt
+File File1.txt (size: 63) has duplicates in the following directories:
+./Dir/Dir3/Dir31/File1.txt
+./Dir/Dir3/Dir32/File1.txt
+
 ```

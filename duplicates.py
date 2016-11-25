@@ -1,4 +1,4 @@
-import sys
+import argparse
 import os
 
 
@@ -6,58 +6,33 @@ def get_files_data(input_directory):
     data = {}
     for current_dir, folders, files in os.walk(input_directory):
         for file in files:
-            file_attributes = {
-                'path': current_dir,
-                'size': os.path.getsize(current_dir + '/' + file)
-            }
-            if file in data:
-                data[file].append(file_attributes)
+            key = (file, os.path.getsize('{0}/{1}'.format(current_dir, file)))
+            if key in data:
+                data[key].append(current_dir)
             else:
-                data[file] = [file_attributes]
+                data[key] = [current_dir]
     return data
 
 
 def get_files_duplicates(files_data):
     files_duplicates = {}
-    for file_name in files_data:
-        file_name_duplicates_count = len(files_data[file_name])
-
-        if file_name_duplicates_count > 1:
-
-            file_duplicates_indexes = []
-            for i in range(0, file_name_duplicates_count):
-                size = files_data[file_name][i]['size']
-                for j in range(i + 1, file_name_duplicates_count):
-                    if size == files_data[file_name][j]['size']:
-                        file_duplicates_indexes.append(i)
-                        file_duplicates_indexes.append(j)
-            file_duplicates_indexes = set(file_duplicates_indexes)
-
-            if file_duplicates_indexes:
-                files_duplicates[file_name] = [files_data[file_name][ind] for ind in file_duplicates_indexes]
-
+    for key in files_data:
+        if len(files_data[key]) > 1:
+            files_duplicates[key] = files_data[key]
     return files_duplicates
 
 
 def print_files_duplicates(files_duplicates):
-    for file_name in files_duplicates:
-        print('File {0} has duplicates in the following directories:'.format(file_name))
-        for duplicate in files_duplicates[file_name]:
-            print('{0} (Size: {1})'.format(
-                duplicate['path'] + '/' + file_name,
-                duplicate['size']
-            ))
+    for key in files_duplicates:
+        print('File {0} (size: {1}) has duplicates in the following directories:'.format(key[0], key[1]))
+        for path in files_duplicates[key]:
+            print('{0}/{1}'.format(path, key[0]))
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        input_directory = input('Enter directory > ')
-    else:
-        if len(sys.argv) > 2:
-            print("Error: too many parameters are transferred")
-            sys.exit(1)
-        input_directory = sys.argv[1]
-
-    files_data = get_files_data(input_directory)
+    parser = argparse.ArgumentParser(description='Script for search of files duplicates')
+    parser.add_argument('dir', help='Directory for search')
+    args = parser.parse_args()
+    files_data = get_files_data(args.dir)
     files_duplicates = get_files_duplicates(files_data)
     print_files_duplicates(files_duplicates)
